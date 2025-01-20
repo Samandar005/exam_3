@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+
+{% block title %}  Blog Post Title - Modern Blog {% endblock %}
+
+
+{% block content %}
+<main class="container mx-auto px-6 py-8">
+    <article class="bg-white rounded-lg shadow-md overflow-hidden">
+        <img src="{{ post.image.url }}"
+             alt="Blog post cover image" class="w-full h-64 object-cover">
+        <div class="p-6 md:p-8">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">{{ post.name }}</h1>
+            <div class="flex items-center mb-4">
+                <img src="{{ post.author.image.url }}"
+                     alt="Author" class="w-10 h-10 rounded-full mr-3">
+                <div>
+                    <p class="font-semibold text-gray-800">{{ post.author }}</p>
+                    <p class="text-sm text-gray-600">Published on {{ post.created_at|date:"Y-m-d" }} • 5 min read</p>
+                </div>
+            </div>
+            <div class="prose max-w-none">
+                <p>{{ post.description }}</p>
+            </div>
+            <div class="mt-8 flex flex-wrap">
+                {% for tag in post.tag.all %}
+                    <span class="text-sm bg-blue-100 text-blue-800 rounded-full px-3 py-1 mr-2 mb-2">{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </article>
+
+    <!-- Comments Section -->
+    <section class="mt-12 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-6">Comments</h2>
+        <div class="space-y-6">
+            <!-- Comment 1 -->
+            {% for comment in comments %}
+                <div class="flex">
+                    <div>
+                        <h3 class="font-semibold">{{ comment.name }}</h3>
+                        <p class="text-gray-600 text-sm mb-2">Posted on {{ comment.created_at|date:"Y-m-d" }}</p>
+                        <p>{{ comment.comment }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No comments yet.</p>
+            {% endfor %}
+
+
+            <!-- Add Comment Form -->
+             <form class="mt-8"   method="post" enctype="multipart/form-data">
+                 {% csrf_token %}
+                    <h3 class="text-xl font-semibold mb-4">Add a Comment</h3>
+                    <div class="mb-4">
+                        <label for="{{ form.name.id_for_label }}" class="block text-gray-700 text-sm font-bold mb-2">{{ form.name.label }}</label>
+                        {{ form.name }}
+                    </div>
+                    <div class="mb-4">
+                        <label for="{{ form.email.id_for_label }}" class="block text-gray-700 text-sm font-bold mb-2">{{ form.email.label }}</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="mb-4">
+                        <label for="{{ form.comment.id_for_label }}" class="block text-gray-700 text-sm font-bold mb-2">{{ form.comment.label }}</label>
+                        {{ form.comment }}
+                    </div>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit Comment</button>
+                </form>
+        </div>
+    </section>
+</main>
+{% endblock %}
+

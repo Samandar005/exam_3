@@ -1,0 +1,23 @@
+<header class="bg-white shadow-md">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-xl font-bold text-gray-800 md:text-2xl hover:text-gray-700">
+                    <a href="{% url 'posts:list' %}">Modern Blog</a>
+                </div>
+                <div class="flex items-center">
+                    <div class="hidden md:flex items-center">
+                        <a href="{% url 'posts:list' %}" class="text-gray-800 hover:text-blue-500 mx-3 transition duration-300">Home</a>
+                        <a href="#" class="text-gray-800 hover:text-blue-500 mx-3 transition duration-300">About</a>
+                        <a href="#" class="text-gray-800 hover:text-blue-500 mx-3 transition duration-300">Contact</a>
+                    </div>
+                    <div class="md:hidden">
+                        <button class="text-gray-800 hover:text-blue-500 focus:outline-none">
+                            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
+                                <path d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>

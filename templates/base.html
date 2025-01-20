@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} {% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/animations.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="bg-gray-100 font-sans">
+    {# HEADER #}
+    {% include 'includes/header.html' %}
+
+    <div class="container mx-auto px-6 py-8">
+        <div class="flex flex-wrap">
+            {# SIDEBAR #}
+            {% block sidebar %} {% endblock %}
+
+
+            {# CONTENT #}
+            {% block content %} {% endblock %}
+        </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>
+

@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Modern Blog  {% endblock %}
+
+
+{% block sidebar %}
+    <div class="w-full md:w-1/4 lg:w-1/5 px-4 mb-8">
+    <div class="bg-white rounded-lg shadow-md p-6 animate-fade-in">
+        <h2 class="text-xl font-semibold mb-4">Filters</h2>
+        <form>
+            <div class="mb-4">
+               <h3 class="font-medium mb-2">Categories</h3>
+                <div class="space-y-2">
+                    <a href="{% url 'posts:list' %}" class="text-blue-500">All Categories</a>
+                    {% for catalog in catalogs %}
+                        <label class="flex items-center">
+                            <input type="checkbox" name="catalog" value="{{ catalog.id }}"
+                                   class="form-checkbox text-blue-500"
+                                   {% if catalog.id in selected_catalogs %} checked {% endif %}>
+                            <span class="ml-2">{{ catalog.name }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h3 class="font-medium mb-2">Sort by</h3>
+                <select name="sort" class="w-full border rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500">
+                    <option value="latest" {% if sort == 'latest' %}selected{% endif %}>Latest</option>
+                    <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Oldest</option>
+                    <option value="popular" {% if sort == 'popular' %}selected{% endif %}>Most Popular</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <h3 class="font-medium mb-2">Date Range</h3>
+                <div class="space-y-2">
+                    <input type="date" name="start_date"
+                           value="{{ start_date|default:'' }}"
+                           class="w-full border rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500">
+
+                    <input type="date" name="end_date"
+                           value="{{ end_date|default:'' }}"
+                           class="w-full border rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500">
+                </div>
+            </div>
+
+            <div class="mb-4">
+               <h3 class="font-medium mb-2">Hashtags</h3>
+               <div class="space-y-2">
+                   {% for tag in tags %}
+                       <label class="flex items-center">
+                           <input type="checkbox" name="tag" value="{{ tag.id }}"
+                                  class="form-checkbox text-blue-500"
+                                  {% if tag.id in selected_tags %} checked {% endif %}>
+                           <span class="ml-2">#{{ tag.name }}</span>
+                       </label>
+                   {% endfor %}
+               </div>
+            </div>
+            <button type="submit"
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 mt-4">
+                Apply Filters
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full md:w-3/4 lg:w-4/5 px-4">
+    <!-- Search Bar -->
+        <div class="mb-8">
+            <form class="flex items-center" method="GET">
+                <input type="text" name="search" placeholder="Search blog posts..."
+                       value="{{ search_query }}"
+                       class="w-full px-4 py-2 rounded-l-lg border-t border-b border-l text-gray-800 border-gray-200 bg-white focus:outline-none focus:border-blue-500">
+                <button class="px-4 py-2 rounded-r-lg bg-blue-500 text-white font-bold hover:bg-blue-600 focus:outline-none transition duration-300">
+                    Search
+                </button>
+            </form>
+        </div>
+
+    <!-- Blog Posts -->
+    {% if posts %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Blog Post 1 -->
+        {% for post in posts %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden animate-fade-in">
+                <img src="{{ post.image.url }}"
+                     alt="Blog post image" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h2 class="text-xl font-semibold mb-2">
+                        {% if post.slug %}
+                            <a href="{{ post.get_detail_url }}" class="text-gray-800 hover:text-blue-500 transition duration-300">{{ post.name }}</a>
+                        {% else %}
+                            <span class="text-gray-500">{{ post.name }}</span>
+                        {% endif %}
+                    </h2>
+                    <p class="text-gray-600 mb-4">{{ post.description|truncatewords:10 }}</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <img src="{{ post.author.image.url }}"
+                                 alt="Author" class="w-8 h-8 rounded-full mr-2">
+                            <span class="text-sm text-gray-700">{{ post.author }}</span>
+                        </div>
+                        <span class="text-sm text-gray-500">5 min read</span>
+                    </div>
+                    <div class="mt-4 flex flex-wrap">
+                        {% for tag in post.tag.all %}
+                            <span class="text-xs bg-blue-100 text-blue-800 rounded-full px-2 py-1 mr-2 mb-2">#{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <h3>No Posts!</h3>
+    {% endif %}
+
+    <!-- Pagination -->
+    {% if posts %}
+    <div class="mt-12 flex justify-center">
+        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            <a href="#"
+               class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                <span class="sr-only">Previous</span>
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                     aria-hidden="true">
+                    <path fill-rule="evenodd"
+                          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                          clip-rule="evenodd"/>
+                </svg>
+            </a>
+            <a href="#"
+               class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">1</a>
+            <a href="#"
+               class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">2</a>
+            <a href="#"
+               class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-blue-600 hover:bg-gray-50">3</a>
+            <a href="#"
+               class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">4</a>
+            <a href="#"
+               class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">5</a>
+            <a href="#"
+               class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                <span class="sr-only">Next</span>
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                     aria-hidden="true">
+                    <path fill-rule="evenodd"
+                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                          clip-rule="evenodd"/>
+                </svg>
+            </a>
+        </nav>
+    </div>
+    {% else %}
+    {% endif %}
+</div>
+{% endblock %}
+
