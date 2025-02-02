@@ -74,4 +74,7 @@ def blog_detail(request, year, month, day, slug):
 
     return render(request, 'posts/post-detail.html', ctx)
 
+def about(request):
+    return render(request, 'about.html')
+
 
