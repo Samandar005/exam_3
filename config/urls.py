@@ -18,13 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from posts.views import about
+from posts.views import about, contact
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('posts.urls')),
-    path('about/', about, name='about')
+    path('about/', about, name='about'),
+    path('contact/', contact, name='contact'),
 ]
 
 if settings.DEBUG:
